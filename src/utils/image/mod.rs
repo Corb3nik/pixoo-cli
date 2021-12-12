@@ -3,6 +3,8 @@ use std::collections::HashMap;
 
 use crate::utils::Color;
 
+pub mod text_ext;
+
 #[derive(Debug)]
 pub struct Image {
     pub num_colors: usize,
@@ -40,7 +42,9 @@ impl From<[[Color; 16]; 16]> for Image {
         let mut color_data = vec![];
         color_data.resize(color_data_len, 0u8);
         for (color, index) in color_map.iter() {
-            color_data[*index..*index + 3].copy_from_slice(&color.into_bytes());
+            let start_index = index * 3;
+            let end_index = start_index + 3;
+            color_data[start_index..end_index].copy_from_slice(&color.into_bytes());
         }
 
         // Serialize pixels
