@@ -21,9 +21,9 @@ impl Command for SetBoxMode {
                     0x00,
                     0x00,
                     0x00,
-                    0x00,
-                    0x00,
-                    0xff,
+                    0xf5,
+                    0x7f,
+                    0x75,
                 ]
             }
             _ => panic!("Mode is not implemented"),

@@ -12,3 +12,9 @@ pub enum Commands {
 pub trait Command {
     fn into_bytes(&self) -> Vec<u8>;
 }
+
+impl Command for &[u8] {
+    fn into_bytes(&self) -> Vec<u8> {
+        self.to_vec()
+    }
+}

@@ -8,7 +8,9 @@ pub struct Serialize<T> {
 impl Serialize<u16> {
     pub fn p16(value: u16) -> Vec<u8> {
         let mut result = vec![];
-        result.write_u16::<LittleEndian>(value);
+        result
+            .write_u16::<LittleEndian>(value)
+            .expect("Failed to pack value");
         result
     }
 }

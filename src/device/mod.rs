@@ -21,20 +21,29 @@ impl Device {
 
         Ok(Self { inner })
     }
-    pub fn set_brightness(&mut self, value: u8) {
+
+    pub fn set_brightness(&mut self, value: u8) -> Result<()> {
         let command = SetBrightness { value };
-        self.send_command(command);
+        self.send_command(command)?;
+        Ok(())
     }
 
-    pub fn show_time(&mut self) {
+    pub fn show_time(&mut self) -> Result<()> {
         let mode = Mode::Time;
         let command = SetBoxMode { mode };
-        self.send_command(command);
+        self.send_command(command)?;
+        Ok(())
     }
 
-    fn send_command<T: Command>(&mut self, command: T) {
+    pub fn send_raw(&mut self, raw: &[u8]) -> Result<()> {
+        self.send_command(raw)?;
+        Ok(())
+    }
+
+    fn send_command<T: Command>(&mut self, command: T) -> Result<()> {
         let frame = Frame::new(command);
         let data = frame.into_bytes();
-        self.inner.write(&data);
+        self.inner.write(&data)?;
+        Ok(())
     }
 }
