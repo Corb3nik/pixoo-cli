@@ -3,7 +3,7 @@ use crate::utils::{Image, Serialize, SerializeExt};
 
 const FRAME_START: u8 = 0xaa;
 const RESET_PALETTE: u8 = 0x0;
-const PACKET_SIZE: usize = 400;
+const PACKET_SIZE: usize = 200;
 const ANIMATION_DELAY: usize = 1000;
 
 pub struct SetMulBoxColor {
