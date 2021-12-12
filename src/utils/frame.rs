@@ -1,3 +1,5 @@
+use std::num::Wrapping;
+
 use crate::commands::Command;
 use crate::utils::Serialize;
 
@@ -43,10 +45,10 @@ impl<T: Command> Frame<T> {
 }
 
 fn crc(data: &[u8]) -> u16 {
-    let mut sum = 0u16;
+    let mut sum = Wrapping(0u16);
     for byte in data {
-        sum += *byte as u16
+        sum += Wrapping(*byte as u16)
     }
 
-    sum
+    sum.0
 }

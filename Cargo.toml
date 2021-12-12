@@ -12,8 +12,8 @@ name = "pixoo_cli"
 path = "src/lib.rs"
 
 [dependencies]
+anyhow = "1"
+bitvec = "0.22"
 byteorder = "1"
 serialport = "4.0.1"
-anyhow = "1"
 thiserror = "1"
-
