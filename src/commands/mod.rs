@@ -1,10 +1,10 @@
-pub use box_color::*;
-pub use box_mode::*;
-pub use brightness::*;
+pub use set_box_color::*;
+pub use set_box_mode::*;
+pub use set_brightness::*;
 
-mod box_color;
-pub mod box_mode;
-mod brightness;
+mod set_box_color;
+pub mod set_box_mode;
+mod set_brightness;
 
 pub enum Commands {
     SetBoxColor = 0x44,

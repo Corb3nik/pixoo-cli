@@ -1,51 +1,18 @@
 use bitvec::prelude::*;
 use std::collections::HashMap;
 
-use super::{Command, Commands};
-use crate::utils::{Color, Serialize, SerializeExt};
-
-pub struct SetBoxColor {
-    pub pixels: [[Color; 16]; 16],
-}
-
-impl Command for SetBoxColor {
-    fn into_bytes(&self) -> Vec<u8> {
-        let mut bytes = vec![Commands::SetBoxColor as u8];
-
-        // Fixed data
-        bytes.extend_from_slice(&[0x00, 0x0a, 0x0a, 0x04, 0xaa]);
-
-        // Image data
-        let image_data = ImageData::from(self);
-        let image_data_vec = image_data.into_vec();
-
-        // Image data length
-        let image_data_len = Serialize::p16(7 + image_data_vec.len());
-        bytes.extend_from_slice(&image_data_len);
-
-        // Fixed data
-        bytes.extend_from_slice(&[0x00, 0x00, 0x00]);
-
-        // Number of colors
-        bytes.push(image_data.num_colors as u8);
-
-        // Image data
-        bytes.extend_from_slice(&image_data_vec);
-
-        bytes
-    }
-}
+use crate::utils::Color;
 
 #[derive(Debug)]
-struct ImageData {
+pub struct Image {
     pub num_colors: usize,
 
     color_data: Vec<u8>,
     pixel_data: Vec<u8>,
 }
 
-impl ImageData {
-    fn into_vec(&self) -> Vec<u8> {
+impl Image {
+    pub fn into_vec(&self) -> Vec<u8> {
         let mut data = vec![];
         data.extend_from_slice(&self.color_data);
         data.extend_from_slice(&self.pixel_data);
@@ -53,10 +20,8 @@ impl ImageData {
     }
 }
 
-impl From<&SetBoxColor> for ImageData {
-    fn from(val: &SetBoxColor) -> ImageData {
-        let pixels = &val.pixels;
-
+impl From<[[Color; 16]; 16]> for Image {
+    fn from(pixels: [[Color; 16]; 16]) -> Image {
         let mut color_map = HashMap::new();
         let mut pixel_array = vec![];
 
@@ -90,7 +55,7 @@ impl From<&SetBoxColor> for ImageData {
 
         let pixel_data = bitvec.into_vec();
 
-        ImageData {
+        Image {
             color_data,
             pixel_data,
             num_colors: num_colors,

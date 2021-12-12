@@ -1,5 +1,4 @@
 use byteorder::{LittleEndian, WriteBytesExt};
-use std::marker::PhantomData;
 
 pub struct Serialize {}
 

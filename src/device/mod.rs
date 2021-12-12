@@ -1,9 +1,9 @@
 pub use error::DeviceError;
 pub use serialport::SerialPort;
 
-use crate::commands::box_mode::Mode;
+use crate::commands::set_box_mode::Mode;
 use crate::commands::{Command, SetBoxColor, SetBoxMode, SetBrightness};
-use crate::utils::{Color, Frame};
+use crate::utils::{Frame, Image};
 
 mod error;
 
@@ -47,8 +47,8 @@ impl Device {
 
     // Set an image
     // Image argument should be a 16x16 array
-    pub fn set_image(&mut self, pixels: [[Color; 16]; 16]) -> Result<()> {
-        let command = SetBoxColor { pixels };
+    pub fn set_image(&mut self, image: Image) -> Result<()> {
+        let command = SetBoxColor { image };
         self.send_command(command)?;
         Ok(())
     }
