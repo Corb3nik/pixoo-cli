@@ -1,7 +1,7 @@
 use std::num::Wrapping;
 
 use crate::commands::Command;
-use crate::utils::Serialize;
+use crate::utils::{Serialize, SerializeExt};
 
 const HEADER: u8 = 0x1;
 const FOOTER: u8 = 0x2;
@@ -26,7 +26,7 @@ impl<T: Command> Frame<T> {
 
         // Length
         let length_i = payload.len() as u8 + CRC_LENGTH as u8;
-        let length = Serialize::<u8>::p16(length_i);
+        let length = Serialize::p16(length_i);
         frame.extend_from_slice(&length);
 
         // Payload
@@ -34,7 +34,7 @@ impl<T: Command> Frame<T> {
 
         // CRC
         let crc_i = crc(&frame[1..]);
-        let crc = Serialize::<u16>::p16(crc_i);
+        let crc = Serialize::p16(crc_i);
         frame.extend_from_slice(&crc);
 
         // Footer

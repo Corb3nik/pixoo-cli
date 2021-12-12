@@ -2,8 +2,8 @@ pub use error::DeviceError;
 pub use serialport::SerialPort;
 
 use crate::commands::box_mode::Mode;
-use crate::commands::{Color, Command, SetBoxColor, SetBoxMode, SetBrightness};
-use crate::utils::Frame;
+use crate::commands::{Command, SetBoxColor, SetBoxMode, SetBrightness};
+use crate::utils::{Color, Frame};
 
 mod error;
 
@@ -56,7 +56,6 @@ impl Device {
     fn send_command<T: Command>(&mut self, command: T) -> Result<()> {
         let frame = Frame::new(command);
         let data = frame.into_bytes();
-        print!("{:?}", data);
         self.inner.write(&data)?;
         Ok(())
     }

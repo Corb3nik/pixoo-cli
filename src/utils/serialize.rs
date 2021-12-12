@@ -1,12 +1,14 @@
 use byteorder::{LittleEndian, WriteBytesExt};
 use std::marker::PhantomData;
 
-pub struct Serialize<T> {
-    _marker: PhantomData<T>,
+pub struct Serialize {}
+
+pub trait SerializeExt<T> {
+    fn p16(value: T) -> Vec<u8>;
 }
 
-impl Serialize<u16> {
-    pub fn p16(value: u16) -> Vec<u8> {
+impl SerializeExt<u16> for Serialize {
+    fn p16(value: u16) -> Vec<u8> {
         let mut result = vec![];
         result
             .write_u16::<LittleEndian>(value)
@@ -15,8 +17,18 @@ impl Serialize<u16> {
     }
 }
 
-impl Serialize<u8> {
-    pub fn p16(value: u8) -> Vec<u8> {
+impl SerializeExt<u8> for Serialize {
+    fn p16(value: u8) -> Vec<u8> {
         vec![value, 0]
+    }
+}
+
+impl SerializeExt<usize> for Serialize {
+    fn p16(value: usize) -> Vec<u8> {
+        let mut result = vec![];
+        result
+            .write_u16::<LittleEndian>(value as u16)
+            .expect("Failed to pack value");
+        result
     }
 }

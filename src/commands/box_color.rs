@@ -2,18 +2,37 @@ use bitvec::prelude::*;
 use std::collections::HashMap;
 
 use super::{Command, Commands};
-use crate::utils::Serialize;
+use crate::utils::{Color, Serialize, SerializeExt};
 
-#[derive(Copy, Clone, Default, Eq, PartialEq, Hash)]
-pub struct Color {
-    pub r: u8,
-    pub g: u8,
-    pub b: u8,
+pub struct SetBoxColor {
+    pub pixels: [[Color; 16]; 16],
 }
 
-impl Color {
+impl Command for SetBoxColor {
     fn into_bytes(&self) -> Vec<u8> {
-        vec![self.r, self.g, self.b]
+        let mut bytes = vec![Commands::SetBoxColor as u8];
+
+        // Fixed data
+        bytes.extend_from_slice(&[0x00, 0x0a, 0x0a, 0x04, 0xaa]);
+
+        // Image data
+        let image_data = ImageData::from(self);
+        let image_data_vec = image_data.into_vec();
+
+        // Image data length
+        let image_data_len = Serialize::p16(7 + image_data_vec.len());
+        bytes.extend_from_slice(&image_data_len);
+
+        // Fixed data
+        bytes.extend_from_slice(&[0x00, 0x00, 0x00]);
+
+        // Number of colors
+        bytes.push(image_data.num_colors as u8);
+
+        // Image data
+        bytes.extend_from_slice(&image_data_vec);
+
+        bytes
     }
 }
 
@@ -76,33 +95,5 @@ impl From<&SetBoxColor> for ImageData {
             pixel_data,
             num_colors: num_colors,
         }
-    }
-}
-
-pub struct SetBoxColor {
-    pub pixels: [[Color; 16]; 16],
-}
-
-impl Command for SetBoxColor {
-    fn into_bytes(&self) -> Vec<u8> {
-        let mut bytes = vec![Commands::SetBoxColor as u8, 0x00, 0x0a, 0x0a, 0x04, 0xaa];
-
-        let image_data = ImageData::from(self);
-        let image_data_vec = image_data.into_vec();
-
-        // Image data length
-        let image_data_len = Serialize::<u16>::p16(7 + image_data_vec.len() as u16);
-        bytes.extend_from_slice(&image_data_len);
-
-        // Fixed data
-        bytes.extend_from_slice(&[0x00, 0x00, 0x00]);
-
-        // Number of colors
-        bytes.push(image_data.num_colors as u8);
-
-        // Image data
-        bytes.extend_from_slice(&image_data_vec);
-
-        bytes
     }
 }
