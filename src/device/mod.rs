@@ -2,7 +2,9 @@ pub use error::DeviceError;
 pub use serialport::SerialPort;
 
 use crate::commands::set_box_mode::Mode;
-use crate::commands::{Command, SetBoxColor, SetBoxMode, SetBrightness};
+use crate::commands::{
+    Command, MultiCommand, SetBoxColor, SetBoxMode, SetBrightness, SetMulBoxColor,
+};
 use crate::utils::{Frame, Image};
 
 mod error;
@@ -46,16 +48,25 @@ impl Device {
     }
 
     // Set an image
-    // Image argument should be a 16x16 array
     pub fn set_image(&mut self, image: Image) -> Result<()> {
         let command = SetBoxColor { image };
         self.send_command(command)?;
         Ok(())
     }
 
+    // Set an animation
+    pub fn set_animation(&mut self, images: Vec<Image>) -> Result<()> {
+        let generator = SetMulBoxColor { images };
+        for command in generator.commands() {
+            self.send_command(command)?;
+        }
+        Ok(())
+    }
+
     fn send_command<T: Command>(&mut self, command: T) -> Result<()> {
         let frame = Frame::new(command);
         let data = frame.into_bytes();
+        println!("data: {:?}", data);
         self.inner.write(&data)?;
         Ok(())
     }

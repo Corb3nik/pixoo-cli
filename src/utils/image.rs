@@ -12,7 +12,7 @@ pub struct Image {
 }
 
 impl Image {
-    pub fn into_vec(&self) -> Vec<u8> {
+    pub fn into_bytes(&self) -> Vec<u8> {
         let mut data = vec![];
         data.extend_from_slice(&self.color_data);
         data.extend_from_slice(&self.pixel_data);

@@ -15,7 +15,7 @@ impl Command for SetBoxColor {
         bytes.extend_from_slice(&[0x00, 0x0a, 0x0a, 0x04, FRAME_START]);
 
         // Image data
-        let image_data = self.image.into_vec();
+        let image_data = self.image.into_bytes();
 
         // Image data length
         let image_data_len = Serialize::p16(7 + image_data.len());
